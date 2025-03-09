@@ -34,6 +34,11 @@
 <!-- Tabel Data -->
 <div class="container mt-4" style="max-width: 80%;">
     <h2 class="text-center">Daftar Data</h2>
+    <div class="text-right mb-3">
+        <button class="btn btn-success" data-toggle="modal" data-target="#addDataModal">
+            <i class="fas fa-plus"></i> Tambah Data
+        </button>
+    </div>
     <div class="table-responsive" style="overflow-x: auto;">
         <table class="table table-bordered">
             <thead class="thead-dark">
@@ -84,6 +89,62 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Tambah Data -->
+<div class="modal fade" id="addDataModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Data Pengiriman</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addDataForm">
+                    <div class="form-group">
+                        <label>Nama Pengirim</label>
+                        <input type="text" class="form-control" id="namaPengirim" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Pengirim</label>
+                        <input type="text" class="form-control" id="alamatPengirim" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Telpon Pengirim</label>
+                        <input type="text" class="form-control" id="nomorTelponPengirim" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Penerima</label>
+                        <input type="text" class="form-control" id="namaPenerima" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat Penerima</label>
+                        <input type="text" class="form-control" id="alamatPenerima" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Telpon Penerima</label>
+                        <input type="text" class="form-control" id="nomorTelponPenerima" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Barang</label>
+                        <input type="text" class="form-control" id="descBarang" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Berat Barang (gram)</label>
+                        <input type="number" class="form-control" id="beratBarang" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga Barang</label>
+                        <input type="number" class="form-control" id="hargaBarang" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -160,6 +221,7 @@
     function updateTotal(total) {
         document.getElementById("total-data").textContent = `${total}`;
     }
+    
 
     async function seeDetail(idTrackingBitship) {
     const apiUrl = `https://api.biteship.com/v1/trackings/${idTrackingBitship}`;
@@ -203,7 +265,47 @@
         console.error("Error fetching tracking data:", error);
         alert("Gagal mengambil data tracking!");
     }
-}
+    }
+
+    document.getElementById("addDataForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const token = getCookie("access_token");
+        const payload = {
+            namaPengirim: document.getElementById("namaPengirim").value,
+            alamatPengirim: document.getElementById("alamatPengirim").value,
+            nomorTelponPengirim: document.getElementById("nomorTelponPengirim").value,
+            namaPenerima: document.getElementById("namaPenerima").value,
+            alamatPenerima: document.getElementById("alamatPenerima").value,
+            nomorTelponPenerima: document.getElementById("nomorTelponPenerima").value,
+            descBarang: document.getElementById("descBarang").value,
+            beratBarang: parseInt(document.getElementById("beratBarang").value),
+            hargaBarang: parseInt(document.getElementById("hargaBarang").value),
+            createdBy: "admin123"
+        };
+
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/order-shipment", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert("Data berhasil ditambahkan!");
+                $("#addDataModal").modal("hide");
+                fetchData();
+            } else {
+                alert("Gagal menambahkan data: " + result.detail);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Terjadi kesalahan, coba lagi.");
+        }
+    });
 
 
     function logout() {
