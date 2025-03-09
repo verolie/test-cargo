@@ -332,7 +332,7 @@
             document.getElementById("managementRoleTab").style.display = "block";
         }
     } else {
-        logout(); // Jika user tidak ditemukan, langsung logout
+        logout();
     }
 
     document.getElementById("logoutBtn").addEventListener("click", function (e) {

@@ -16,11 +16,9 @@ class OrderShipmentController extends Controller
     public function index(Request $request)
     {
         try {
-            // Ambil parameter query 'sort_by' dan 'order'
-            $sortBy = $request->query('sort_by', 'id'); // default: id
+            $sortBy = $request->query('sort_by', 'id');
             $order = strtolower($request->query('order', 'asc')) === 'desc' ? 'desc' : 'asc';
 
-            // Daftar field yang diizinkan untuk sorting
             $allowedFields = [
                 'id',
                 'idOrderBitship',
@@ -39,15 +37,12 @@ class OrderShipmentController extends Controller
                 'updated_at'
             ];
 
-            // Validasi field sorting
             if (!in_array($sortBy, $allowedFields)) {
                 return $this->errorResponse("Invalid sort field", 422);
             }
 
-            // Ambil data shipment
             $shipments = \App\Models\OrderShipment::orderBy($sortBy, $order)->get();
 
-            // Hitung total data
             $total = $shipments->count();
 
             return $this->successResponse(
@@ -190,7 +185,6 @@ class OrderShipmentController extends Controller
         try {
             $shipment = OrderShipment::findOrFail($id);
 
-            // Hapus order di Biteship terlebih dahulu
             if ($shipment->idOrderBitship) {
                 $client = new \GuzzleHttp\Client();
                 $response = $client->post("https://api.biteship.com/v1/orders/{$shipment->idOrderBitship}/cancel", [

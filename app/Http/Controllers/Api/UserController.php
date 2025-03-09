@@ -18,7 +18,7 @@ class UserController extends Controller
     public function update(Request $request)
     {
         try {
-            $id = $request->query('id'); // Ambil id dari query parameter
+            $id = $request->query('id');
 
             if (!$id) {
                 return $this->errorResponse('User ID is required', 400);
@@ -68,7 +68,7 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $id = $request->query('id'); // Ambil id dari query parameter
+            $id = $request->query('id');
 
             if (!$id) {
                 return $this->errorResponse('User ID is required', 400);

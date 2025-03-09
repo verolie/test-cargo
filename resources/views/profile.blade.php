@@ -87,7 +87,7 @@
             document.getElementById("managementRoleTab").style.display = "block";
         }
     } else {
-        logout(); // Jika user tidak ditemukan, langsung logout
+        logout();
     }
 
     document.getElementById("logoutBtn").addEventListener("click", function (e) {
@@ -96,12 +96,10 @@
     });
       fetchData();
     });
-    
+
     $(document).ready(function() {
-    // Ambil data user dari localStorage
     const user = JSON.parse(localStorage.getItem("user")) || {};
 
-    // Set nilai default ke form
     $("#name").val(user.name || "");
     $("#email").val(user.email || "");
 

@@ -156,17 +156,14 @@
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
   <script>
-    // Fungsi untuk mengambil cookie
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(";").shift();
     }
 
-    // Simpan data user secara global untuk dipakai di edit
     let usersData = [];
 
-    // Fungsi untuk mengambil data user
     async function fetchData() {
       const token = getCookie("access_token");
       try {
@@ -184,7 +181,6 @@
 
         const data = await response.json();
         if (data.status === "success") {
-          // Simpan data untuk keperluan edit
           usersData = data.data.data;
           renderTable(usersData);
           updateTotal(data.data.total);
@@ -196,7 +192,6 @@
       }
     }
 
-    // Render tabel user
     function renderTable(data) {
       const tableBody = $("#table-body");
       tableBody.empty();
@@ -226,7 +221,6 @@
       document.getElementById("total-data").textContent = `${total}`;
     }
 
-    // Fungsi untuk menambah data user (register)
     document.getElementById("addDataForm").addEventListener("submit", async function (e) {
       e.preventDefault();
       const token = getCookie("access_token");
@@ -287,8 +281,6 @@
         alert("Terjadi kesalahan.");
       }
     }
-
-    // Fungsi untuk logout
     function logout() {
         localStorage.removeItem("user"); 
       document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
@@ -305,7 +297,7 @@
             document.getElementById("managementRoleTab").style.display = "block";
         }
     } else {
-        logout(); // Jika user tidak ditemukan, langsung logout
+        logout(); 
     }
 
     document.getElementById("logoutBtn").addEventListener("click", function (e) {
@@ -315,32 +307,27 @@
       fetchData();
     });
 
-    // Fungsi untuk membuka modal edit dan mengisi form dengan data user
     function editUser(id) {
       const user = usersData.find(u => u.id === id);
       if (user) {
         $("#editUserId").val(user.id);
         $("#editNama").val(user.name);
         $("#editEmail").val(user.email);
-        // Set role jika ada data role
         if (user.role) {
           $("#editRole").val(user.role.id);
         } else {
           $("#editRole").val("");
         }
-        // Kosongkan field password saat membuka modal edit
         $("#editPassword").val('');
         $("#editPasswordConfirmation").val('');
         $("#editDataModal").modal("show");
       }
     }
 
-    // Proses update data user
     document.getElementById("editDataForm").addEventListener("submit", async function (e) {
   e.preventDefault();
   const token = getCookie("access_token");
 
-  // Ambil data user sebelumnya dari usersData berdasarkan ID yang sedang diedit
   const userId = document.getElementById("editUserId").value;
   const oldUserData = usersData.find(user => user.id == userId);
   
@@ -350,12 +337,10 @@
     roleId: parseInt(document.getElementById("editRole").value)
   };
 
-  // Hanya tambahkan email ke payload jika berubah
   if (newEmail !== oldUserData.email) {
     payload.email = newEmail;
   }
 
-      // Hanya kirim password jika diisi
     const newPassword = document.getElementById("editPassword").value;
       if (newPassword.trim()) {
         payload.password = newPassword;
@@ -376,7 +361,7 @@
         if (response.ok) {
           alert("Data berhasil diperbarui!");
           $("#editDataModal").modal("hide");
-          fetchData(); // Refresh data
+          fetchData(); 
         } else {
           alert("Gagal memperbarui data: " + result.detail);
         }

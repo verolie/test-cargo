@@ -81,7 +81,6 @@ class AuthController extends Controller
         }
     }
 
-    // Endpoint check email: GET /api/check-email?email=example@example.com
     public function checkEmail(Request $request)
     {
         try {
@@ -101,12 +100,11 @@ class AuthController extends Controller
         }
     }
 
-    // Endpoint untuk mengambil detail user (token harus disertakan)
     public function user(Request $request)
     {
         try {
             $users = \App\Models\User::with('role')->get();
-            $total = \App\Models\User::count(); // Hitung total user
+            $total = \App\Models\User::count();
 
             return $this->successResponse(
                 'User details retrieved',
