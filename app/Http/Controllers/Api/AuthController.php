@@ -105,10 +105,16 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         try {
+            $users = \App\Models\User::with('role')->get();
+            $total = \App\Models\User::count(); // Hitung total user
+
             return $this->successResponse(
                 'User details retrieved',
                 200,
-                new UserResource($request->user())
+                [
+                    'total' => $total,
+                    'data' => UserResource::collection($users)
+                ]
             );
         } catch (\Exception $e) {
             return $this->errorResponse($e->getMessage(), 500);

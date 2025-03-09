@@ -13,6 +13,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/check-email', [AuthController::class, 'checkEmail']);
 
 Route::middleware('jwt.auth')->group(function () {
+    Route::post('/user', [UserController::class, 'register']);
     Route::get('/user', [AuthController::class, 'user']);
     Route::put('/user', [UserController::class, 'update']);
     Route::delete('/user', [UserController::class, 'destroy']);

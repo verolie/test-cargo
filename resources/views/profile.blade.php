@@ -8,26 +8,34 @@
 </head>
 <body>
 
-<!-- Navbar -->
+  <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Shipment Cargo</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
-                    test update
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
-                    <a class="dropdown-item text-danger" href="#">Logout</a>
-                </div>
-            </li>
-        </ul>
-    </div>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Shipment</a>
+      </li>
+      <li class="nav-item" id="managementRoleTab" style="display: none;">
+        <a class="nav-link" href="/management-user">Management Role</a>
+      </li>
+    </ul>
+
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span id="usernameDisplay">Username</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="profile">Edit Profile</a>
+          <a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <!-- Form Edit Profile -->
@@ -63,6 +71,32 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
 <script>
+        function logout() {
+        localStorage.removeItem("user"); 
+      document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.href = "/login";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+        document.getElementById("usernameDisplay").textContent = user.name;
+
+        if (user.role !== "user") {
+            document.getElementById("managementRoleTab").style.display = "block";
+        }
+    } else {
+        logout(); // Jika user tidak ditemukan, langsung logout
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+        logout();
+    });
+      fetchData();
+    });
+    
     $(document).ready(function() {
     // Ambil data user dari localStorage
     const user = JSON.parse(localStorage.getItem("user")) || {};

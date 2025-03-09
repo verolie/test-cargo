@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Shipment</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
@@ -11,29 +11,37 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Shipment Cargo</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Username
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="profile">Edit Profile</a>
-                    <a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a>
-                </div>
-            </li>
-        </ul>
-    </div>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Shipment</a>
+      </li>
+      <li class="nav-item" id="managementRoleTab" style="display: none;">
+        <a class="nav-link" href="/management-user">Management Role</a>
+      </li>
+    </ul>
+
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span id="usernameDisplay">Username</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" href="profile">Edit Profile</a>
+          <a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <!-- Tabel Data -->
 <div class="container mt-4" style="max-width: 80%;">
-    <h2 class="text-center">Daftar Data</h2>
+    <h2 class="text-center">Daftar Data Shipment</h2>
     <div class="text-right mb-3">
         <button class="btn btn-success" data-toggle="modal" data-target="#addDataModal">
             <i class="fas fa-plus"></i> Tambah Data
@@ -309,15 +317,28 @@
 
 
     function logout() {
+        localStorage.removeItem("user"); 
         document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         window.location.href = "/login";
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("logoutBtn").addEventListener("click", function (e) {
-            e.preventDefault();
-            logout();
-        });
+           const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user) {
+        document.getElementById("usernameDisplay").textContent = user.name;
+
+        if (user.role !== "user") {
+            document.getElementById("managementRoleTab").style.display = "block";
+        }
+    } else {
+        logout(); // Jika user tidak ditemukan, langsung logout
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
+        e.preventDefault();
+        logout();
+    });
 
         fetchData();
     });

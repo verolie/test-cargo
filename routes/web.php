@@ -17,3 +17,7 @@ Route::get('/register', function () {
 Route::get('/profile', function () {
     return view('profile');
 });
+
+Route::get('/management-user', function () {
+    return view('managementUser');
+});

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Traits\ApiResponseTrait;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -17,7 +18,12 @@ class UserController extends Controller
     public function update(Request $request)
     {
         try {
-            $user = $request->user();
+            $id = $request->query('id'); // Ambil id dari query parameter
+
+            if (!$id) {
+                return $this->errorResponse('User ID is required', 400);
+            }
+            $user = User::find($id);
 
             $validator = Validator::make($request->all(), [
                 'name'     => 'sometimes|required|string|max:255',
@@ -62,7 +68,18 @@ class UserController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $user = $request->user();
+            $id = $request->query('id'); // Ambil id dari query parameter
+
+            if (!$id) {
+                return $this->errorResponse('User ID is required', 400);
+            }
+
+            $user = User::find($id);
+
+            if (!$user) {
+                return $this->errorResponse('User not found', 404);
+            }
+
             $user->delete();
 
             return $this->successResponse(
