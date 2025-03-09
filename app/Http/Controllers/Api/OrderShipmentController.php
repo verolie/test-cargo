@@ -90,11 +90,11 @@ class OrderShipmentController extends Controller
                 "origin_contact_name" => $request->namaPengirim,
                 "origin_contact_phone" => $request->nomorTelponPengirim,
                 "origin_address" => $request->alamatPengirim,
-                "origin_postal_code" => 12440, // Sesuaikan dengan input user jika ada
+                "origin_postal_code" => 12440,
                 "destination_contact_name" => $request->namaPenerima,
                 "destination_contact_phone" => $request->nomorTelponPenerima,
                 "destination_address" => $request->alamatPenerima,
-                "destination_postal_code" => 12950, // Sesuaikan dengan input user jika ada
+                "destination_postal_code" => 12950,
                 "courier_company" => "jne",
                 "courier_type" => "reg",
                 "delivery_type" => "now",
@@ -114,7 +114,7 @@ class OrderShipmentController extends Controller
             $client = new \GuzzleHttp\Client();
             $response = $client->post('https://api.biteship.com/v1/orders', [
                 'headers' => [
-                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdC1zaGlwIiwidXNlcklkIjoiNjdjZDBlYmZkMzhlODkwMDEyMWQ2ZmIzIiwiaWF0IjoxNzQxNDkyODYzfQ.tE1wAiJglo0NE2K3ubtAcaqE7A1VrsL4YkRHv7dksqY',
+                    'authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzdC1zaGlwIiwidXNlcklkIjoiNjdjZDBlYmZkMzhlODkwMDEyMWQ2ZmIzIiwiaWF0IjoxNzQxNDkyODYzfQ.tE1wAiJglo0NE2K3ubtAcaqE7A1VrsL4YkRHv7dksqY',
                     'Content-Type' => 'application/json'
                 ],
                 'json' => $biteshipData
@@ -122,7 +122,7 @@ class OrderShipmentController extends Controller
 
             $biteshipResponse = json_decode($response->getBody(), true);
 
-            if (!isset($biteshipResponse['id']) || !isset($biteshipResponse['tracking_id'])) {
+            if (!isset($biteshipResponse['id']) || !isset($biteshipResponse['courier']['tracking_id'])) {
                 return $this->errorResponse("Failed to create shipment in Biteship", 500);
             }
 

@@ -27,7 +27,7 @@
                         <input type="password" class="form-control" id="password" placeholder="Masukkan Password">
                     </div>
 
-                    <button class="btn btn-login btn-block btn-success">LOGIN</button>
+                    <button class="btn btn-login btn-block btn-success bg-dark">Login</button>
 
                 </div>
             </div>
@@ -46,36 +46,47 @@
 
 <script>
     $(document).ready(function() {
-
-        $(".btn-login").click( function() {
-
+        $(".btn-login").click(function() {
             var email = $("#email").val();
             var password = $("#password").val();
             var token = $("meta[name='csrf-token']").attr("content");
 
             if(email.length == "") {
-
-                Swal.fire({
-                    type: 'warning',
-                    title: 'Oops...',
-                    text: 'Alamat Email Wajib Diisi !'
-                });
-
+                Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Alamat Email Wajib Diisi!' });
+                return;
             } else if(password.length == "") {
-
-                Swal.fire({
-                    type: 'warning',
-                    title: 'Oops...',
-                    text: 'Password Wajib Diisi !'
-                });
-
-            } else {
-
-
+                Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Password Wajib Diisi!' });
+                return;
             }
 
-        });
+            // Kirim data ke backend
+            $.ajax({
+                url: "/api/login",
+                type: "POST",
+                data: { email: email, password: password, _token: token },
+                success: function(response) {
+                    if (response.data.access_token) {
+                        document.cookie = `access_token=${response.data.access_token}; path=/; max-age=86400; Secure`;
 
+                        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Berhasil!',
+                            text: 'Anda akan dialihkan...',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.href = "/";
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({ icon: 'error', title: 'Oops...', text: xhr.responseJSON.message || 'Terjadi kesalahan!' });
+                }
+            });
+
+        });
     });
 </script>
 

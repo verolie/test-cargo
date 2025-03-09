@@ -18,7 +18,7 @@ class OrderShipmentResource extends JsonResource
             'id' => $this->id,
             'idOrderBitship' => $this->idOrderBitship,
             'idTrackingBitship' => $this->idTrackingBitship,
-            'namaPengirimin' => $this->namaPengirimin,
+            'namaPengirim' => $this->namaPengirim,
             'alamatPengirim' => $this->alamatPengirim,
             'nomorTelponPengirim' => $this->nomorTelponPengirim,
             'namaPenerima' => $this->namaPenerima,

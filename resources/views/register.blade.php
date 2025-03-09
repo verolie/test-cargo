@@ -32,7 +32,7 @@
                         <input type="password" class="form-control" id="password" placeholder="Masukkan Password">
                     </div>
 
-                    <button class="btn btn-register btn-block btn-success">REGISTER</button>
+                    <button class="btn btn-register btn-block btn-success bg-dark">Register</button>
 
 
                 </div>
@@ -51,46 +51,72 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/8.11.8/sweetalert2.all.min.js"></script>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+    $(".btn-register").click(function () {
+        var nama_lengkap = $("#nama_lengkap").val();
+        var email = $("#email").val();
+        var password = $("#password").val();
+        var token = $("meta[name='csrf-token']").attr("content");
 
-        $(".btn-register").click( function() {
+        if (nama_lengkap.length === "") {
+            Swal.fire({ icon: "warning", title: "Oops...", text: "Nama Lengkap Wajib Diisi!" });
+            return;
+        } 
+        if (email.length === "") {
+            Swal.fire({ icon: "warning", title: "Oops...", text: "Alamat Email Wajib Diisi!" });
+            return;
+        } 
+        if (password.length < 6) {
+            Swal.fire({ icon: "warning", title: "Oops...", text: "Password minimal 6 karakter!" });
+            return;
+        }
 
-            var nama_lengkap = $("#nama_lengkap").val();
-            var email    = $("#email").val();
-            var password = $("#password").val();
-            var token = $("meta[name='csrf-token']").attr("content");
-
-            if (nama_lengkap.length == "") {
-
-                Swal.fire({
-                    type: 'warning',
-                    title: 'Oops...',
-                    text: 'Nama Lengkap Wajib Diisi !'
-                });
-
-            } else if(email.length == "") {
-
-                Swal.fire({
-                    type: 'warning',
-                    title: 'Oops...',
-                    text: 'Alamat Email Wajib Diisi !'
-                });
-
-            } else if(password.length == "") {
-
-                Swal.fire({
-                    type: 'warning',
-                    title: 'Oops...',
-                    text: 'Password Wajib Diisi !'
-                });
-
-            } else {
-
-            }
-
+        $.ajax({
+            url: "/api/check-email?email=" + email,
+            type: "GET",
+            success: function (response) {
+                if (response.email_exists) {
+                    Swal.fire({ icon: "error", title: "Oops...", text: "Email sudah terdaftar!" });
+                } else {
+                    registerUser(nama_lengkap, email, password, token);
+                }
+            },
+            error: function (xhr) {
+                Swal.fire({ icon: "error", title: "Oops...", text: "Terjadi kesalahan saat cek email!" });
+            },
         });
-
     });
+    function registerUser(nama_lengkap, email, password, token) {
+        $.ajax({
+            url: "/api/register",
+            type: "POST",
+            data: {
+                name: nama_lengkap,
+                email: email,
+                password: password,
+                password_confirmation: password,
+                roleId: 2,
+                _token: token,
+            },
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Registrasi Berhasil!",
+                    text: "Silakan login",
+                    timer: 2000,
+                    showConfirmButton: false,
+                }).then(() => {
+                    window.location.href = "/login";
+                });
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON.message || "Terjadi kesalahan!";
+                Swal.fire({ icon: "error", title: "Oops...", text: errorMessage });
+            },
+        });
+    }
+});
+
 </script>
 
 </body>
