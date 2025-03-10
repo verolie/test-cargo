@@ -116,7 +116,7 @@
     }
 
     const token = getCookie("access_token");
-
+        const user = JSON.parse(localStorage.getItem("user")) || {};
 
         if (password && password !== password_confirmation) {
             alert("Password dan Konfirmasi Password harus sama!");
@@ -130,7 +130,7 @@
         };
 
         $.ajax({
-            url: "/api/user",
+            url: "/api/user?id=" + user.id,
             type: "PUT",
             contentType: "application/json",
             data: JSON.stringify(updatedUser),

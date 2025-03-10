@@ -216,7 +216,7 @@
                         <button class="btn btn-info btn-sm" onclick="seeDetail('${item.idTrackingBitship}')">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${item.id})">
+                        <button class="btn btn-danger btn-sm" onclick="deleteShipment(${item.id})">
                             <i class="fas fa-trash-alt"></i>
                         </button>
                     </td>
@@ -274,6 +274,43 @@
         alert("Gagal mengambil data tracking!");
     }
     }
+
+    async function deleteShipment(id) {
+    const confirmDelete = window.confirm("Apakah Anda yakin ingin menghapus data ini?");
+    
+    if (!confirmDelete) {
+        return; // Jika pengguna membatalkan, hentikan proses
+    }
+
+    const token = getCookie("access_token");
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/order-shipment/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal menghapus data! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.status === "success") {
+            alert("Data berhasil dihapus!");
+            fetchData(); // Refresh tabel setelah penghapusan
+        } else {
+            alert("Gagal menghapus data: " + result.message);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Terjadi kesalahan saat menghapus data!");
+    }
+}
+
 
     document.getElementById("addDataForm").addEventListener("submit", async function (e) {
         e.preventDefault();
