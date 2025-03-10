@@ -111,37 +111,38 @@ Response:
   ]
 }
 ```
-* **Get User Info (Authenticated)**
-List Shipments
-Endpoint: GET /api/order-shipment
-Query Parameters (Optional):
-* sort_by: Field to sort by (default: id)
-* order: Sorting order (asc or desc)
+* **Update User (Authenticated)**
+Endpoint: PUT /api/user?id={id}
+Description: Update user information.
+Request Body:
 ```
-Authorization: Bearer {token}
+{
+  "name": "string (optional)",
+  "email": "string (optional)",
+  "password": "string (optional, min 6 characters, must be confirmed)",
+  "password_confirmation": "string (required if password is set)",
+  "roleId": "integer (optional, must exist in roles table)"
+}
 ```
 Response:
 ```
 {
-  "message": "Order shipment details retrieved",
-  "total": "integer",
-  "data": [
-    {
-      "id": "integer",
-      "namaPengirim": "string",
-      "alamatPengirim": "string",
-      "nomorTelponPengirim": "string",
-      "namaPenerima": "string",
-      "alamatPenerima": "string",
-      "nomorTelponPenerima": "string",
-      "descBarang": "string",
-      "beratBarang": "integer",
-      "hargaBarang": "integer",
-      "createdBy": "string",
-      "created_at": "datetime",
-      "updated_at": "datetime"
-    }
-  ]
+  "message": "User updated successfully",
+  "data": {
+    "id": "integer",
+    "name": "string",
+    "email": "string",
+    "roleId": "integer"
+  }
+}
+```
+* **Delete User (Authenticated)**
+Endpoint: DELETE /api/user?id={id}
+Description: Delete a user.
+Response:
+```
+{
+  "message": "User deleted successfully"
 }
 ```
 * **Create Shipment**
